@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:sky_device_info/utils.dart';
+
 import '../utils/utils.dart';
 import 'beans.dart';
 import 'websocket_utils.dart';
@@ -145,7 +147,7 @@ class WSServer extends _WSServer<ClientInfo> {
   }
 }
 
-abstract class _WSServer<T> {
+abstract class _WSServer<T> with CommonUtils {
   static const tag = "_WSServer";
 
   HttpServer? server;

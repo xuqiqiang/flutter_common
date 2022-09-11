@@ -1,8 +1,7 @@
 import 'dart:math';
 
 import 'package:json_annotation/json_annotation.dart';
-
-import '../utils/utils.dart';
+import 'package:sky_device_info/utils.dart';
 
 part 'beans.g.dart';
 
@@ -11,7 +10,7 @@ part 'beans.g.dart';
 /// [code] 消息码
 /// [data] 负载信息
 @JsonSerializable()
-class WSMessage {
+class WSMessage with CommonUtils {
   WSMessage({required this.code, this.data});
 
   int code;
@@ -31,7 +30,7 @@ class WSMessage {
 /// [type] 类型，0:电脑 1: 安卓 2: 苹果
 /// [name] 设备名称
 @JsonSerializable()
-class ServerInfo {
+class ServerInfo with CommonUtils {
   ServerInfo({required this.type, required this.name, this.extra});
 
   int type;

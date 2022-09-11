@@ -2,14 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../utils/utils.dart';
+import 'package:sky_device_info/utils.dart';
+
 import 'device_find.dart';
 import 'device_find_utils.dart';
 
 const SSDP_MULTICAST_ADDR = "239.255.255.250";
 const SSDP_PORT = 1900;
 
-abstract class SSDPBase {
+abstract class SSDPBase with CommonUtils {
   static const _TAG = 'SSDPBase';
   late RawDatagramSocket _mSocket;
   late bool? _showLog;

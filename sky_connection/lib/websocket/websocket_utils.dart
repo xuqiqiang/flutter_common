@@ -4,8 +4,7 @@ import 'dart:math';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:mime/mime.dart';
-
-import '../utils/utils.dart';
+import 'package:sky_device_info/utils.dart';
 
 const deviceTypePC = 0;
 const deviceTypeAndroid = 1;
@@ -105,12 +104,12 @@ bool checkAuth(HttpRequest request) {
   if (apiKey == null || nonce == null || timeStamp == null || sign == null) {
     return false;
   }
-  log('checkAuth $apiKey $nonce $timeStamp $sign');
+  commonUtils.log('checkAuth $apiKey $nonce $timeStamp $sign');
   String? apiSecret = authKeys[apiKey];
   if (apiSecret == null) return false;
   String authSign =
       toMd5('nonce=$nonce&timeStamp=$timeStamp&apiSecret=$apiSecret');
-  log('checkAuth authSign $authSign');
+  commonUtils.log('checkAuth authSign $authSign');
   return sign == authSign;
 }
 
@@ -127,12 +126,12 @@ void sendResponseFile(HttpRequest request, File? file,
     mimeType = lookupMimeType(file.path);
     mimeType ??= "*/*";
   }
-  log('sendResponseFile mimeType:$mimeType');
+  commonUtils.log('sendResponseFile mimeType:$mimeType');
 
   int length = await file.length();
   String? range = request.headers.value("range");
   if (range != null) {
-    log('sendResponseFile range:$range');
+    commonUtils.log('sendResponseFile range:$range');
     request.response.statusCode = 206;
     List<String> parts = range.split("=");
     parts = parts[1].split("-");
@@ -147,7 +146,7 @@ void sendResponseFile(HttpRequest request, File? file,
       end = int.parse(parts[1]);
     }
     int byteLength = end - start + 1;
-    log('range:$range start:$start '
+    commonUtils.log('range:$range start:$start '
         'end:$end '
         'byteLength: $byteLength');
     initResponseHeaders(request, mimeType, byteLength);

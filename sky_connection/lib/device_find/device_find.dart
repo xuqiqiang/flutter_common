@@ -1,3 +1,5 @@
+import 'package:sky_device_info/utils.dart';
+
 import '../utils/utils.dart';
 import 'device_find_broadcast.dart';
 import 'device_find_ssdp.dart';
@@ -7,7 +9,7 @@ export 'device_find_utils.dart';
 typedef OnFindListener = Function(String address, int flag, String data);
 typedef OnStateListener = Function(int state);
 
-abstract class DeviceFind {
+abstract class DeviceFind with CommonUtils {
   Future<void> init();
 
   void startServer(int flag);

@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../utils/utils.dart';
+import 'package:sky_device_info/utils.dart';
+
 import 'beans.dart';
 import 'websocket_utils.dart';
 
@@ -57,7 +58,7 @@ class WSClient extends _WSClient {
   }
 }
 
-abstract class _WSClient {
+abstract class _WSClient with CommonUtils {
   static const tag = "_WSClient";
   WebSocket? _client;
   String? _address;
