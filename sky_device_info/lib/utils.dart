@@ -3,8 +3,13 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
+class CommonConfig {
+  static bool? inDebugMode;
+}
+
 mixin CommonUtils {
   bool get inDebugMode {
+    if (CommonConfig.inDebugMode != null) return CommonConfig.inDebugMode!;
     bool _inDebugMode = false;
     assert(_inDebugMode = true);
     return _inDebugMode;
@@ -54,3 +59,11 @@ mixin CommonUtils {
     return !kIsWeb && Platform.isWindows ? "\\" : "/";
   }
 }
+
+class CommonObject with CommonUtils {
+  CommonObject._();
+
+  static final CommonObject instance = CommonObject._();
+}
+
+final commonUtils = CommonObject.instance;
