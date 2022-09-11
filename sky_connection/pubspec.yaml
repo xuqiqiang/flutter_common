@@ -15,8 +15,7 @@ dependencies:
   crypto: ^3.0.2
   convert: ^3.0.2
   sky_device_info:
-    url: https://github.com/xuqiqiang/flutter_common.git
-    path: sky_device_info
+    path: ../sky_device_info
 
 dev_dependencies:
   flutter_test:
