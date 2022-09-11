@@ -6,10 +6,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:sky_device_info/beans.dart';
 import 'package:network_info_plus/network_info_plus.dart' as network_info_plus;
+import 'package:sky_device_info/utils.dart';
 
 typedef OnNetworkChanged = Function(NetworkInfo?);
 
-class SkyDeviceInfo {
+class SkyDeviceInfo with CommonUtils {
   final _channel = const MethodChannel('sky_device_info');
   Function(DeviceInfo?)? _onDeviceInfo;
   DeviceInfo? _deviceInfo;
@@ -18,15 +19,6 @@ class SkyDeviceInfo {
   final List<OnNetworkChanged> _onNetworkCallbackList = [];
   dynamic _networkSubscription;
   bool? _loadNetworkInfo;
-
-  static log(Object? object) {
-    bool inDebugMode = false;
-    assert(inDebugMode = true);
-    if (!inDebugMode) return;
-    if (object == null) return;
-    // ignore: avoid_print
-    print('$object');
-  }
 
   SkyDeviceInfo._privateConstructor();
 

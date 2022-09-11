@@ -3,7 +3,7 @@ import 'package:sky_device_info/utils.dart';
 part 'beans.g.dart';
 
 // @JsonSerializable()
-class DeviceInfo {
+class DeviceInfo with CommonUtils {
   DeviceInfo({
     this.deviceName,
     this.osName,
@@ -23,7 +23,7 @@ class DeviceInfo {
 }
 
 // @JsonSerializable()
-class GPUInfo {
+class GPUInfo with CommonUtils {
   GPUInfo({this.name, this.version});
 
   String? name;
@@ -36,7 +36,7 @@ class GPUInfo {
 }
 
 // @JsonSerializable()
-class NetworkInfo {
+class NetworkInfo with CommonUtils {
   NetworkInfo({required this.networkAdapters});
 
   List<NetworkAdapter> networkAdapters;
@@ -53,7 +53,7 @@ class NetworkInfo {
 }
 
 // @JsonSerializable()
-class NetworkAdapter {
+class NetworkAdapter with CommonUtils {
   final int ifTypeIEEE80211 = 71; // Radio spread spectrum
   String? name;
   String? id;
