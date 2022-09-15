@@ -14,6 +14,7 @@ const wsMsgConnected = 1001;
 const wsMsgMediaUpdate = 2001;
 const wsMsgStartStreaming = 3001;
 const wsMsgStopStreaming = 3002;
+const wsMsgOpenSteamHome = 3003;
 
 const wsPortFlyScreen = 9890;
 const wsPortStream = 9891;
