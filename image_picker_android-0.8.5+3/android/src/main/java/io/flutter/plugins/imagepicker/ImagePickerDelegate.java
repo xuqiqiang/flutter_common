@@ -152,6 +152,19 @@ public class ImagePickerDelegate
 
           @Override
           public void getFullImagePath(final Uri imageUri, final OnPathReadyListener listener) {
+            // added by xuqiqiang 2022-9-15 start
+			if (imageUri != null) {
+              try {
+                String path = imageUri.getPath();
+                if (path != null && new File(path).exists()) {
+                  listener.onPathReady(path);
+                  return;
+                }
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+            }
+			// added by xuqiqiang 2021-9-15 end
             MediaScannerConnection.scanFile(
                 activity,
                 new String[] {(imageUri != null) ? imageUri.getPath() : ""},
@@ -285,7 +298,9 @@ public class ImagePickerDelegate
     }
 
     File videoFile = createTemporaryWritableVideoFile();
-    pendingCameraMediaUri = Uri.parse("file:" + videoFile.getAbsolutePath());
+	// added by xuqiqiang 2022-9-15 start
+    pendingCameraMediaUri = Uri.parse("file://" + videoFile.getAbsolutePath());
+	// added by xuqiqiang 2022-9-15 end
 
     Uri videoUri = fileUriResolver.resolveFileProviderUriForFile(fileProviderName, videoFile);
     intent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
@@ -369,7 +384,9 @@ public class ImagePickerDelegate
     }
 
     File imageFile = createTemporaryWritableImageFile();
-    pendingCameraMediaUri = Uri.parse("file:" + imageFile.getAbsolutePath());
+	// added by xuqiqiang 2022-9-15 start
+    pendingCameraMediaUri = Uri.parse("file://" + imageFile.getAbsolutePath());
+	// added by xuqiqiang 2022-9-15 end
 
     Uri imageUri = fileUriResolver.resolveFileProviderUriForFile(fileProviderName, imageFile);
     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
