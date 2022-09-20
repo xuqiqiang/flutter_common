@@ -57,7 +57,7 @@ class ClientInfo {
 
   ClientInfo({required this.model, required this.sn, this.extra});
 
-  String get name => 'Skyworth VR ${model.replaceAll('_', ' ')}'
+  String get name => '${model.replaceAll('_', ' ')}'
       ' ${sn.substring(0, min(sn.length, 8))}';
 
   @override

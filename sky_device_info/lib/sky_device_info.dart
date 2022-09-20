@@ -88,6 +88,8 @@ class SkyDeviceInfo with CommonUtils {
           ipBroadcast: await info.getWifiBroadcast(),
           index: 0);
       return NetworkInfo(networkAdapters: [adapter]);
+    } else if (connectivityResult == ConnectivityResult.none) {
+      return NetworkInfo(networkAdapters: []);
     }
     return await readNetworkInfoByDart();
   }
