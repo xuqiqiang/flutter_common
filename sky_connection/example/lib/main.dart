@@ -7,6 +7,7 @@ import 'package:sky_connection/utils/utils.dart';
 import 'package:sky_connection/websocket/beans.dart';
 import 'package:sky_device_info/beans.dart';
 import 'package:sky_device_info/sky_device_info.dart';
+import 'package:sky_device_info/utils.dart';
 
 void main() {
   runApp(const MyApp());
@@ -215,4 +216,8 @@ class WSClientDelegate implements ClientListener {
     wsClient?.stop();
     wsClient = null;
   }
+}
+
+log(Object? object, {String? tag, bool? write}) {
+  commonUtils.log(object, tag: tag, write: write);
 }

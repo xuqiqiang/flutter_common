@@ -1,6 +1,5 @@
 import 'package:sky_device_info/utils.dart';
 
-import '../utils/utils.dart';
 import 'device_find_broadcast.dart';
 import 'device_find_ssdp.dart';
 import 'device_find_utils.dart';
