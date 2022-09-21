@@ -185,4 +185,17 @@ class SkyDeviceInfo with CommonUtils {
     };
     return await _channel.invokeMethod('requestPermissions', arguments);
   }
+
+  /// To successfully get WiFi Name or Wi-Fi BSSID starting with Android 1O
+  fixNetworkInfoForAndroid() async {
+    if (await requestPermissions(
+        '位置', ['android.permission.ACCESS_FINE_LOCATION'])) {
+      if (_networkInfo != null && _networkInfo!.networkAdapters.isNotEmpty) {
+        var connectivityResult = await Connectivity().checkConnectivity();
+        log('connectivityResult $connectivityResult');
+        _networkInfo = await _readNetworkInfo(connectivityResult);
+        onNetworkChanged(_networkInfo);
+      }
+    }
+  }
 }
