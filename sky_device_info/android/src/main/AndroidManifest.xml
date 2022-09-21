@@ -1,3 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.ssnwt.sky_device_info">
+    package="com.ssnwt.sky_device_info">
+
+    <application>
+        <activity
+            android:name="com.ssnwt.requester.proxy.PermissionActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/RequesterProxyTranslucent" />
+    </application>
 </manifest>

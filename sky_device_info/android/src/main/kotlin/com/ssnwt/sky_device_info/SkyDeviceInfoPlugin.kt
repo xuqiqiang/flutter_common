@@ -8,12 +8,14 @@ import android.os.Build
 import android.provider.Settings
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
+import com.ssnwt.requester.PermissionRequester
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import org.json.JSONArray
 
 /** SkyDeviceInfoPlugin */
 class SkyDeviceInfoPlugin: FlutterPlugin, MethodCallHandler {
@@ -44,6 +46,33 @@ class SkyDeviceInfoPlugin: FlutterPlugin, MethodCallHandler {
       result.success("{\"deviceName\":\"$deviceName\",\"osName\":\"$osName\"}")
     } else if (call.method == "getPlatformVersion") {
       result.success("Android ${Build.VERSION.RELEASE}")
+    } else if (call.method == "checkPermissions") {
+      val permissions = call.argument<List<String>>("permissions") as List<String>
+      val arr = PermissionRequester.checkSelfPermission(context, *permissions.toTypedArray())
+      val array = JSONArray()
+      for (e in arr) {
+        array.put(e)
+      }
+      result.success(array.toString())
+    } else if (call.method == "requestPermissions") {
+      val permissions = call.argument<List<String>>("permissions") as List<String>
+      val name = call.argument<String?>("name")
+      PermissionRequester.requestForce(
+        context,
+        name,
+        { success, _, _ ->
+          result.success(success)
+        },
+        *permissions.toTypedArray()
+      )
+    } else if (call.method == "checkSpecialPermission") {
+      val permission = call.argument<String>("permission")
+      result.success(PermissionRequester.checkSpecialPermission(context, permission))
+    } else if (call.method == "requestPermissions") {
+      val permission = call.argument<String>("permission") as String
+      PermissionRequester.requestSpecialPermission(
+        context, permission
+      ) { success -> result.success(success) }
     } else {
       result.notImplemented()
     }

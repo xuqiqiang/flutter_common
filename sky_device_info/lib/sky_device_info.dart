@@ -168,4 +168,21 @@ class SkyDeviceInfo with CommonUtils {
     _networkInfo = null;
     _networkInfoJson = null;
   }
+
+  Future<List<String>> checkPermissions(List<String> permissions) async {
+    final Map<String, dynamic> arguments = {
+      'permissions': ['android.permission.CAMERA'],
+    };
+    var result = await _channel.invokeMethod('checkPermissions', arguments);
+    return (jsonDecode(result) as List).map<String>((e) => e).toList();
+  }
+
+  Future<bool> requestPermissions(
+      String? name, List<String> permissions) async {
+    final Map<String, dynamic> arguments = {
+      'name': name,
+      'permissions': permissions,
+    };
+    return await _channel.invokeMethod('requestPermissions', arguments);
+  }
 }
