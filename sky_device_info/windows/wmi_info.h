@@ -46,7 +46,8 @@ private:
 		//_stprintf(vRamCharBuff, _T("hres:%ld %d"), hres, hres < 0 ? 5:6);
 		//wstring vrammegabytesStr = wstring(vRamCharBuff);
 		//::MessageBox(NULL, vRamCharBuff, L"Dropped!", MB_ICONINFORMATION);
-		if (FAILED(hres)) {
+		// CoInitializeSecurity 返回0x80010119的原因 https://blog.csdn.net/xunying6967/article/details/82657534
+		if (FAILED(hres) && RPC_E_TOO_LATE != hres) {
 			throw std::exception("Failed to initialize COM library");
 		}
 		//if (1)return;
@@ -67,7 +68,7 @@ private:
 		);
 
 
-		if (FAILED(hres)) {
+		if (FAILED(hres) && RPC_E_TOO_LATE != hres) {
 			CoUninitialize();
 			throw std::exception("Failed to initialize COM security levels");
 		}
@@ -82,7 +83,7 @@ private:
 			CLSCTX_INPROC_SERVER,
 			IID_IWbemLocator, (LPVOID*)& pLoc);
 
-		if (FAILED(hres)) {
+		if (FAILED(hres) && RPC_E_TOO_LATE != hres) {
 			CoUninitialize();
 			throw std::exception("Failed to create IWbemLocator object");
 		}
@@ -106,7 +107,7 @@ private:
 			&pSvc                    // pointer to IWbemServices proxy
 		);
 
-		if (FAILED(hres)) {
+		if (FAILED(hres) && RPC_E_TOO_LATE != hres) {
 			pLoc->Release();
 			CoUninitialize();
 			throw std::exception("Could not connect to root/cimv2 namespace");
@@ -127,7 +128,7 @@ private:
 			EOAC_NONE                    // proxy capabilities 
 		);
 
-		if (FAILED(hres)) {
+		if (FAILED(hres) && RPC_E_TOO_LATE != hres) {
 			pSvc->Release();
 			pLoc->Release();
 			CoUninitialize();

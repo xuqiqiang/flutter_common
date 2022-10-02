@@ -57,9 +57,13 @@ class SkyDeviceInfo with CommonUtils {
         if (addr.address.startsWith('192.') ||
             addr.address.startsWith('10.') ||
             addr.address.startsWith('172.')) {
+          String name = interface.name;
+          if (name.toLowerCase().contains('wlan')) {
+            name = '无线热点';
+          }
           NetworkAdapter adapter = NetworkAdapter(
               ipAddress: addr.address,
-              connectionName: interface.name,
+              connectionName: name,
               index: interface.index);
           list.add(adapter);
         }
@@ -88,8 +92,8 @@ class SkyDeviceInfo with CommonUtils {
           ipBroadcast: await info.getWifiBroadcast(),
           index: 0);
       return NetworkInfo(networkAdapters: [adapter]);
-    } else if (connectivityResult == ConnectivityResult.none) {
-      return NetworkInfo(networkAdapters: []);
+      // } else if (connectivityResult == ConnectivityResult.none) {
+      //   return NetworkInfo(networkAdapters: []);
     }
     return await readNetworkInfoByDart();
   }
