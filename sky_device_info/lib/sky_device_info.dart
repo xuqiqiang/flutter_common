@@ -119,6 +119,14 @@ class SkyDeviceInfo with CommonUtils {
     return await readNetworkInfoByDart();
   }
 
+  Future<NetworkInfo> updateNetworkInfo() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    log('connectivityResult $connectivityResult');
+    _networkInfo = await _readNetworkInfo(connectivityResult);
+    onNetworkChanged(_networkInfo);
+    return _networkInfo!;
+  }
+
   Future<DeviceInfo?> loadDeviceInfo(
       {bool loadNetworkInfo = true, bool excludeVirtualAdapter = true}) async {
     if (_deviceInfo != null) return _deviceInfo!;
@@ -129,10 +137,11 @@ class SkyDeviceInfo with CommonUtils {
       _deviceInfo = DeviceInfo.fromJson(jsonDecode(json));
 
       if (loadNetworkInfo) {
-        var connectivityResult = await Connectivity().checkConnectivity();
-        log('connectivityResult $connectivityResult');
-        _networkInfo = await _readNetworkInfo(connectivityResult);
-        onNetworkChanged(_networkInfo);
+        // var connectivityResult = await Connectivity().checkConnectivity();
+        // log('connectivityResult $connectivityResult');
+        // _networkInfo = await _readNetworkInfo(connectivityResult);
+        // onNetworkChanged(_networkInfo);
+        updateNetworkInfo();
 
         _networkSubscription = Connectivity()
             .onConnectivityChanged
