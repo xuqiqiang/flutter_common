@@ -91,7 +91,28 @@ class SkyDeviceInfo with CommonUtils {
           gatewayIpAddress: await info.getWifiGatewayIP(),
           ipBroadcast: await info.getWifiBroadcast(),
           index: 0);
-      return NetworkInfo(networkAdapters: [adapter]);
+
+      List<NetworkAdapter> networkAdapters = [adapter];
+
+      for (var interface in await NetworkInterface.list()) {
+        for (var addr in interface.addresses) {
+          if (addr.address.startsWith('192.') ||
+              addr.address.startsWith('10.') ||
+              addr.address.startsWith('172.')) {
+            if (addr.address == adapter.ipAddress) continue;
+            String name = interface.name;
+            if (name.toLowerCase().contains('wlan')) {
+              name = '无线热点';
+            }
+            networkAdapters.add(NetworkAdapter(
+                ipAddress: addr.address,
+                connectionName: name,
+                index: interface.index));
+          }
+        }
+      }
+
+      return NetworkInfo(networkAdapters: networkAdapters);
       // } else if (connectivityResult == ConnectivityResult.none) {
       //   return NetworkInfo(networkAdapters: []);
     }
