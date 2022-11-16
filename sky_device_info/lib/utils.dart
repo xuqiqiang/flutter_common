@@ -5,6 +5,8 @@ import 'package:path_provider/path_provider.dart';
 
 class CommonConfig {
   static bool? inDebugMode;
+  static bool? writeLog;
+  static String? appName;
 }
 
 mixin CommonUtils {
@@ -16,18 +18,28 @@ mixin CommonUtils {
   }
 
   void log(Object? object, {String? tag, bool? write}) {
-    if (!inDebugMode) return;
-    String text = tag != null ? '$tag $object' : '$object';
-    // ignore: avoid_print
-    print(text);
-    if (write == true) {
+    String? text;
+    if (write == true || CommonConfig.writeLog == true) {
+      text ??= tag != null ? '$tag $object' : '$object';
       writeLog('${DateTime.now()} $text');
     }
+    if (!inDebugMode) return;
+    text ??= tag != null ? '$tag $object' : '$object';
+    // ignore: avoid_print
+    print(text);
   }
 
+  /// Android: /storage/emulated/0/Android/data/xxx/cache/${appName}/log.txt
+  /// Windows: C:\Users\xxx\AppData\Local\Temp\${appName}\log.txt
   Future writeLog(Object? object) async {
-    File logFile = File('${(await getCachePath())}${getSep()}log.txt');
-    await logFile.writeAsString('$object\n', mode: FileMode.append);
+    try {
+      File logFile = File('${(await getCachePath())}${getSep()}'
+          '${CommonConfig.appName ?? 'flutter-project'}${getSep()}log.txt');
+      if (!await logFile.exists()) await logFile.create(recursive: true);
+      await logFile.writeAsString('$object\n', mode: FileMode.append);
+    } catch(e) {
+      debugPrint('writeLog error $e');
+    }
   }
 
   Map<String, dynamic> filter(Map<String, dynamic> map) {
