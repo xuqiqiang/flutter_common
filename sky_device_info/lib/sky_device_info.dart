@@ -220,6 +220,10 @@ class SkyDeviceInfo with CommonUtils {
     return await _channel.invokeMethod('requestPermissions', arguments);
   }
 
+  Future<String?> pickSharePath() async {
+    return await _channel.invokeMethod('pickSharePath');
+  }
+
   /// To successfully get WiFi Name or Wi-Fi BSSID starting with Android 1O
   fixNetworkInfoForAndroid() async {
     if (await requestPermissions(

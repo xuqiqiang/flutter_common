@@ -7,5 +7,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:theme="@style/RequesterProxyTranslucent" />
+        <activity
+            android:name="com.ssnwt.requester.proxy.PickerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/RequesterProxyTranslucent" />
     </application>
 </manifest>

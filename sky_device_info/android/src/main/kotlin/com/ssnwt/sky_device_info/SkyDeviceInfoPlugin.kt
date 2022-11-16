@@ -9,6 +9,7 @@ import android.provider.Settings
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import com.ssnwt.requester.PermissionRequester
+import com.ssnwt.requester.PickerRequester
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -34,15 +35,19 @@ class SkyDeviceInfoPlugin: FlutterPlugin, MethodCallHandler {
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     if (call.method == "loadDeviceInfo") {
-      var deviceName = ""
-      if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.BLUETOOTH_CONNECT)
-        === PackageManager.PERMISSION_GRANTED
-      ) {
-        deviceName = BluetoothAdapter.getDefaultAdapter().name
-      } else {
-        deviceName = Settings.Secure.getString(context?.getContentResolver(), "bluetooth_name")
+      var deviceName = "Unknown"
+      try {
+        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.BLUETOOTH_CONNECT)
+          === PackageManager.PERMISSION_GRANTED
+        ) {
+          deviceName = BluetoothAdapter.getDefaultAdapter().name
+        } else {
+          deviceName = Settings.Secure.getString(context!!.contentResolver, "bluetooth_name")
+        }
+      } catch (e: Exception) {
+        e.printStackTrace()
       }
-      var osName = "Android ${Build.VERSION.RELEASE}"//Build.DISPLAY
+      val osName = "Android ${Build.VERSION.RELEASE}"//Build.DISPLAY
       result.success("{\"deviceName\":\"$deviceName\",\"osName\":\"$osName\"}")
     } else if (call.method == "getPlatformVersion") {
       result.success("Android ${Build.VERSION.RELEASE}")
@@ -73,6 +78,10 @@ class SkyDeviceInfoPlugin: FlutterPlugin, MethodCallHandler {
       PermissionRequester.requestSpecialPermission(
         context, permission
       ) { success -> result.success(success) }
+    } else if (call.method == "pickSharePath") {
+      PickerRequester.pickSharePath(
+        context
+      ) { path -> result.success(path) }
     } else {
       result.notImplemented()
     }
