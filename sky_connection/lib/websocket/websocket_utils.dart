@@ -6,6 +6,8 @@ import 'package:crypto/crypto.dart';
 import 'package:mime/mime.dart';
 import 'package:sky_device_info/utils.dart';
 
+import 'file_stream.dart';
+
 const deviceTypePC = 0;
 const deviceTypeAndroid = 1;
 const deviceTypeIos = 2;
@@ -131,6 +133,7 @@ void sendResponseFile(HttpRequest request, File? file,
 
   int length = await file.length();
   String? range = request.headers.value("range");
+  Stream<List<int>> fileStream;
   if (range != null) {
     commonUtils.log('sendResponseFile range:$range');
     request.response.statusCode = 206;
@@ -153,12 +156,16 @@ void sendResponseFile(HttpRequest request, File? file,
     initResponseHeaders(request, mimeType, byteLength);
     request.response.headers
         .add(HttpHeaders.contentRangeHeader, 'bytes $start-$end/$length');
-    await request.response.addStream(file.openRead(start, end + 1));
+    // fileStream = file.openRead(start, end + 1);
+    fileStream = FileStream(file.path, start, end + 1);
   } else {
     initResponseHeaders(request, mimeType, length);
-    await request.response.addStream(file.openRead());
+    // fileStream = file.openRead();
+    fileStream = FileStream(file.path);
   }
-  request.response.close();
+  await request.response.addStream(fileStream);
+  (fileStream as FileStream).forceClose();
+  await request.response.close();
 }
 
 void setAllowOriginHeader(HttpRequest request) {

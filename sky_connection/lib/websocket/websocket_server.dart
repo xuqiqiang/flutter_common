@@ -23,10 +23,11 @@ class WSServer extends _WSServer<ClientInfo> {
   static const tag = "WSServer";
   final Map<WebSocket, ClientInfo> _clients = {};
   final ServerInfo serverInfo;
+  final int? maxClientCount;
   ServerListener? _listener;
   WSConnectionType? _type;
 
-  WSServer({required this.serverInfo});
+  WSServer({required this.serverInfo, this.maxClientCount});
 
   void start(WSConnectionType type, {ServerListener? listener}) {
     stop();
@@ -93,11 +94,24 @@ class WSServer extends _WSServer<ClientInfo> {
     String? model = param['model'];
     String? sn = param['sn'];
     if (model == null || sn == null) return null;
-    return ClientInfo(model: model, sn: sn, extra: param['extra']);
+    ClientInfo clientInfo =
+        ClientInfo(model: model, sn: sn, extra: param['extra']);
+    if (maxClientCount != null &&
+        clientCount >= maxClientCount! &&
+        !_clients.containsValue(clientInfo)) {
+      return null;
+    }
+    return clientInfo;
   }
 
   @override
   _onConnected(WebSocket webSocket, ClientInfo client) {
+    if (maxClientCount != null &&
+        clientCount >= maxClientCount! &&
+        !_clients.containsValue(client)) {
+      webSocket.close();
+      return;
+    }
     _clients[webSocket] = client;
     if (_listener != null) {
       _listener!.onClientChanged(_clients.values.toList());
@@ -172,6 +186,10 @@ abstract class _WSServer<T> with CommonUtils {
     List<String> pathSegments = request.uri.pathSegments;
     if (pathSegments.isNotEmpty && pathSegments[0] == 'file') {
       _onRequestFile(request);
+    } else if (pathSegments.isNotEmpty && pathSegments[0] == 'ping') {
+      request.response.statusCode = 200;
+      request.response.write('hello');
+      request.response.close();
     }
   }
 
@@ -226,13 +244,17 @@ abstract class _WSServer<T> with CommonUtils {
           log('upgrade ${webSocket.readyState}', tag: tag);
           if (webSocket.readyState == WebSocket.open) {
             _onConnected(webSocket, t);
-            webSocket.listen((event) {
-              _onReceive(webSocket, event);
-            }, onError: (error) {
-              _onDisconnected(webSocket, error: error);
-            }, onDone: () {
-              _onDisconnected(webSocket);
-            });
+            try {
+              webSocket.listen((event) {
+                _onReceive(webSocket, event);
+              }, onError: (error) {
+                _onDisconnected(webSocket, error: error);
+              }, onDone: () {
+                _onDisconnected(webSocket);
+              });
+            } catch (e) {
+              log('listen $e', tag: tag);
+            }
           }
         } else {
           request.response

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sky_connection/sky_connection.dart';
 import 'package:sky_connection/utils/utils.dart';
 import 'package:sky_connection/websocket/beans.dart';
@@ -99,7 +98,7 @@ class _MyAppState extends State<MyApp> {
     log('onState $state');
     if (state == STATE_BROADCAST_INIT_SOCKET_ERROR ||
         state == STATE_SSDP_INIT_SOCKET_ERROR) {
-      Fluttertoast.showToast(msg: "网络发现服务异常");
+      // Fluttertoast.showToast(msg: "网络发现服务异常");
     }
   }
 
